@@ -21,10 +21,10 @@ app.use('/todo', todoRouter);
 app.use('/user', userRouter);
 
 
-app.use(express.static(path.join(__dirname, '../react-todo-app/build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../react-todo-app/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 module.exports = app;
