@@ -30,12 +30,16 @@ router.post('/login', async function(req, res, next) {
       console.log("Found user")
       return bcrypt.compare(req.body.password, user.password).then(result => {
         if (result === true) {
+          console.log("Password compare success")
           const token = jwt.sign({ id: user._id }, privateKey, { algorithm: 'RS256' });
           return res.status(200).json({"access_token": token});
         } else {
+          console.log("Password compare fail")
           return res.status(401).json({"error": "Invalid credentials."})
         }
       }).catch(error => {
+        console.log("bcrypt exception")
+        console.log("bcrypt exception: " + error.message)
         return res.status(500).json({"error": error.message})
       });
     }
