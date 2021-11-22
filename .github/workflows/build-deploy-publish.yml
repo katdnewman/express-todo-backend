@@ -1,0 +1,35 @@
+name: Build Publish and Deploy
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ '14' ]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+    - run: |
+        npm install
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.TOKEN}}
+        workflow: build-and-publish.yml
+        workflow_conclusion: success
+        repo: paulduszak/frontend-inclass
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "csc436inclassdemo" #Must be unique in Heroku
+        heroku_email: "duszak.paul@gmail.com"
+        appdir: /
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: .
