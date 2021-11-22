@@ -11,6 +11,7 @@ const saltRounds = 10;
 const privateKey = process.env.JWT_PRIVATE_KEY;
 
 router.use(function(req, res, next) {
+  console.log("Salting")
   bcrypt.genSalt(saltRounds, function(err, salt) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
         req.hashedPassword = hash;
