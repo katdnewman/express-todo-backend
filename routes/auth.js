@@ -21,11 +21,13 @@ router.use(function(req, res, next) {
 })
 
 router.post('/login', async function(req, res, next) {
+  console.log("Checking request body")
   if (req.body.username && req.body.password) {
-    
+    console.log("Searching db")
     const user = await User.findOne().where('username').equals(req.body.username).exec()
 
     if (user) {
+      console.log("Found user")
       return bcrypt.compare(req.body.password, user.password).then(result => {
         if (result === true) {
           const token = jwt.sign({ id: user._id }, privateKey, { algorithm: 'RS256' });
@@ -37,7 +39,7 @@ router.post('/login', async function(req, res, next) {
         return res.status(500).json({"error": error.message})
       });
     }
-
+    console.log("Did not find user")
     return res.status(401).json({"error": "Invalid credentials."})
 
   } else {
